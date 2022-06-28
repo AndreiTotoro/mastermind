@@ -44,10 +44,23 @@ class GameManager
     computer_choice == player_choice
   end
 
+  def input_checker(input)
+    @count = 0
+    input.each do |item|
+      @count += 1 if available_colors.any?(item)
+    end
+    @count == 4
+  end
+
   def player_guess
     puts "Please make a guess, here are the available colors: \n"
     display_colors
     @guess = gets.chomp.split
+    if input_checker(@guess) == false
+      puts "\nPlease enter 4 VALID colors! \n"
+      player_guess
+    end
+    @guess
   end
 
   def round_announcer
@@ -79,8 +92,7 @@ class GameManager
         print 'wrong '
       end
     end
-    print "\n"
-    print "\n"
+    print "\n\n"
     @round += 1
   end
 end
@@ -90,7 +102,4 @@ game_manager = GameManager.new
 game_manager.round_manager(game1.secret_code)
 
 # to do:
-# add a method to check if the playered entered exactly 4 colors and those colors are spelled correctly
 # fix the fact that a color that is in place displays almost
-# allow player to play a 12 round game
-# make it so that the player loses if he gets to the 12th round
