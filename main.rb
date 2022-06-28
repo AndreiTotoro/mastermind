@@ -54,6 +54,12 @@ class GameManager
 end
 
 game1 = CodeMaker.new
-gameManager = GameManager.new
-gameManager.choice_cheker(game1.secret_code, game1.player_guess)
+game_manager = GameManager.new
+game_manager.choice_cheker(game1.secret_code, game1.player_guess)
 game1.display_code
+
+# to do:
+# add a method to check if the playered entered exactly 4 colors and those colors are spelled correctly
+# add a method to check for victory
+# allow player to play a 12 round game
+# make it so that the player loses if he gets to the 12th round
