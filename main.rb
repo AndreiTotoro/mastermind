@@ -1,29 +1,47 @@
+module Colors
+  def available_colors
+    %w[yellow blue purple red green black]
+  end
+end
+
 # Generates a random code for the computer each game and handles player choice
 class CodeMaker
+  include Colors
   def initialize
-    @colors = %w[yellow blue purple red green black]
     @secret_code = computer_choice
   end
 
   def computer_choice
     @choice = []
     4.times do |i|
-      @choice[i] = @colors.sample
+      @choice[i] = available_colors.sample
     end
     @choice
   end
 
   attr_reader :secret_code
 
+  def display_code
+    print @secret_code
+  end
+end
+
+# Manages the game itself, checking wheter the guess of the payer is correct and keeping track of rounds
+class GameManager
+  include Colors
+  def initialize
+    @round = 1
+  end
+
   def display_colors
-    @colors.each do |color|
+    available_colors.each do |color|
       print "#{color} "
     end
     print "\n"
   end
 
-  def display_code
-    print @secret_code
+  def code_craked_checker(computer_choice, player_choice)
+    computer_choice == player_choice
   end
 
   def player_guess
@@ -31,15 +49,27 @@ class CodeMaker
     display_colors
     @guess = gets.chomp.split
   end
-end
 
-# Manages the game itself, checking wheter the guess of the payer is correct and keeping track of rounds
-class GameManager
-  def initialize
-    @round = 0
+  def round_announcer
+    "It is currently round number #{@round}. You have #{13 - @round} rounds remaining!"
   end
 
-  def choice_cheker(computer_choice, player_choice)
+  def round_manager(computer_choice)
+    if @round == 3
+      puts 'You have failed guessing the code! Better luck next time!'
+      return
+    end
+    puts round_announcer
+    pguess = player_guess
+    if code_craked_checker(computer_choice, pguess) == true
+      puts 'You cracked the code!'
+      return
+    end
+    choice_checker(computer_choice, pguess)
+    round_manager(computer_choice)
+  end
+
+  def choice_checker(computer_choice, player_choice)
     player_choice.each_with_index do |color, index|
       if color == computer_choice[index]
         print 'perfect '
@@ -48,18 +78,19 @@ class GameManager
       else
         print 'wrong '
       end
-      @round += 1
     end
+    print "\n"
+    print "\n"
+    @round += 1
   end
 end
 
 game1 = CodeMaker.new
 game_manager = GameManager.new
-game_manager.choice_cheker(game1.secret_code, game1.player_guess)
-game1.display_code
+game_manager.round_manager(game1.secret_code)
 
 # to do:
 # add a method to check if the playered entered exactly 4 colors and those colors are spelled correctly
-# add a method to check for victory
+# fix the fact that a color that is in place displays almost
 # allow player to play a 12 round game
 # make it so that the player loses if he gets to the 12th round
