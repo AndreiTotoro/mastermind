@@ -30,9 +30,30 @@ class CodeMaker
     puts "Please make a guess, here are the available colors: \n"
     display_colors
     @guess = gets.chomp.split
-    print "#{@guess}\n"
+  end
+end
+
+# Manages the game itself, checking wheter the guess of the payer is correct and keeping track of rounds
+class GameManager
+  def initialize
+    @round = 0
+  end
+
+  def choice_cheker(computer_choice, player_choice)
+    player_choice.each_with_index do |color, index|
+      if color == computer_choice[index]
+        print 'perfect '
+      elsif computer_choice.any?(color)
+        print 'almost '
+      else
+        print 'wrong '
+      end
+      @round += 1
+    end
   end
 end
 
 game1 = CodeMaker.new
-game1.player_guess
+gameManager = GameManager.new
+gameManager.choice_cheker(game1.secret_code, game1.player_guess)
+game1.display_code
